@@ -1,7 +1,9 @@
 # обновляем код main.py
 from fastapi import FastAPI
+
 from app.config import load_config
 from app.logger import setup_logger
+
 
 app = FastAPI()
 
