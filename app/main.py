@@ -1,8 +1,10 @@
 # обновляем код main.py
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
+from fastapi.responses import FileResponse
 
 from app.config import load_config
 from app.logger import setup_logger
+from app.models import User
 
 
 app = FastAPI()
@@ -16,17 +18,10 @@ else:
 
 
 @app.get("/")
-def read_root():
-    return {"message": "Hello, World!"}
+async def read_root():
+    return FileResponse("app/static/index.html")
 
 
-# новый маршрут
-@app.get("/custom")
-def read_custom_message():
-    return {"message": "This is a custom message!"}
-
-
-@app.get("/db")
-def get_db_info():
-    logger.info(f"Connecting to database: {config.db.database_url}")
-    return {"database_url": config.db.database_url}
+@app.post("/user")
+async def user(user: User):
+    return {"name": user.name, "age": user.age, "is_adult": user.age >= 18}
