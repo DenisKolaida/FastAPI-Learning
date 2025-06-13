@@ -1,5 +1,6 @@
 # main.py
 import os
+
 from fastapi import FastAPI, Form
 from fastapi.responses import FileResponse, RedirectResponse
 
@@ -26,8 +27,9 @@ async def read_users(limit: int = 10):
 async def check_db():
     if not os.path.exists("app/db.db"):
         await dbs.create_table()
-        return {"message":"Database was successfully created."}
-    return {"message":"Database exists."}
+        return {"message": "Database was successfully created."}
+    return {"message": "Database exists."}
+
 
 # Добавление нового пользователя (параметр тела запроса)
 @app.post("/add_user", response_model=User)
