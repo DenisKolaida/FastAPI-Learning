@@ -36,4 +36,7 @@ async def create_table(db: aiosqlite.Connection):
 
 @connect
 async def add_feedback(db: aiosqlite.Connection, username: str, msg: str):
-    await db.execute("""INSERT OR REPLACE INTO feedbacks (user_name, message) VALUES (?,?) """, (username, msg))
+    await db.execute(
+        """INSERT OR REPLACE INTO feedbacks (user_name, message) VALUES (?,?) """,
+        (username, msg),
+    )

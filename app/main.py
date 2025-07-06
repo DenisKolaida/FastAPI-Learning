@@ -41,4 +41,4 @@ async def add_user(user: User):
 @app.post("/feedback")
 async def feedback(fb: Feedback):
     await dbs.add_feedback(fb.name, fb.message)
-    return { "message": f"Feedback received. Thank you, {fb.name}." }
+    return {"message": f"Feedback received. Thank you, {fb.name}."}
