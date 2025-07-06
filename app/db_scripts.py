@@ -28,8 +28,12 @@ async def create_table(db: aiosqlite.Connection):
     await db.execute(
         """
     CREATE TABLE IF NOT EXISTS feedbacks(
-        user_id INTEGER UNIQUE,
-        user_name TEXT,
-        feedback TEXT
+        user_name TEXT UNIQUE,
+        message TEXT
     )"""
     )
+
+
+@connect
+async def add_feedback(db: aiosqlite.Connection, username: str, msg: str):
+    await db.execute("""INSERT OR REPLACE INTO feedbacks (user_name, message) VALUES (?,?) """, (username, msg))
