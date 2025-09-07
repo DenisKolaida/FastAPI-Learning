@@ -1,14 +1,19 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, EmailStr
+from pydantic_extra_types.phone_numbers import PhoneNumber
 
 
-class User(BaseModel):
-    name: str
-    age: int
+class Contact(BaseModel):
+    email: EmailStr
+    phone: PhoneNumber = None
 
 
 class Feedback(BaseModel):
+
     name: str = Field(min_length=2, max_length=50)
-    message: str =  Field(min_length=10, max_length=200)
+    message: str =  Field(min_length=10, max_length=500)
+    contact: Contact
+
+
     @field_validator('message')
     @classmethod
     def has_bad_words(cls, message: str):

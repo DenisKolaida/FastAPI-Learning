@@ -5,7 +5,7 @@ from fastapi import FastAPI, Form
 from fastapi.responses import FileResponse, RedirectResponse
 
 import app.db_scripts as dbs
-from app.models import Feedback, User
+from app.models import Feedback
 
 
 app = FastAPI()
@@ -23,22 +23,10 @@ async def read_users(limit: int = 10):
     return None
 
 
-@app.get("/check-db")
-async def check_db():
-    if not os.path.exists("app/db.db"):
-        await dbs.create_table()
-        return {"message": "Database was successfully created."}
-    return {"message": "Database exists."}
-
-
-# Добавление нового пользователя (параметр тела запроса)
-@app.post("/add_user", response_model=User)
-async def add_user(user: User):
-    # fake_db.append({"username": user.username, "user_info": user.user_info})
-    return user
-
-
 @app.post("/feedback")
-async def feedback(fb: Feedback):
+async def feedback(fb: Feedback, is_premium: bool = False):
+    await dbs.create_table()
     await dbs.add_feedback(fb.name, fb.message)
+    if is_premium:
+        return {f"message": f"Спасибо, {fb.name}! Ваш отзыв сохранён. Ваш отзыв будет рассмотрен в приоритетном порядке."}
     return {f"message": f"Спасибо, {fb.name}! Ваш отзыв сохранён."}
