@@ -23,7 +23,7 @@ async def read_users(limit: int = 10):
     return None
 
 
-@app.get("/check_db")
+@app.get("/check-db")
 async def check_db():
     if not os.path.exists("app/db.db"):
         await dbs.create_table()
@@ -41,4 +41,4 @@ async def add_user(user: User):
 @app.post("/feedback")
 async def feedback(fb: Feedback):
     await dbs.add_feedback(fb.name, fb.message)
-    return {"message": f"Feedback received. Thank you, {fb.name}."}
+    return { "message": f"Feedback received. Thank you, {fb.name}." }
