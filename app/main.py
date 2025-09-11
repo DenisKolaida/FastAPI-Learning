@@ -1,32 +1,25 @@
 # main.py
 import os
+from typing import List
 
-from fastapi import FastAPI, Form
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi import FastAPI, Form, UploadFile
+from fastapi.responses import FileResponse
 
 import app.db_scripts as dbs
-from app.models import Feedback
+from app.models import Feedback, UserCreate
 
 
 app = FastAPI()
 
 
-# Получение пользователя по параметру пути
-@app.get("/users/{username}")
-async def get_user(username: str):
-    return {"error": "User not found"}
+@app.get("/page")
+async def return_html_page():
+    return FileResponse("app/static/index.html")
 
 
-# Получение списка пользователей с ограничением (параметр запроса)
-@app.get("/users/")
-async def read_users(limit: int = 10):
-    return None
-
-
-@app.post("/feedback")
-async def feedback(fb: Feedback, is_premium: bool = False):
-    await dbs.create_table()
-    await dbs.add_feedback(fb.name, fb.message)
-    if is_premium:
-        return {f"message": f"Спасибо, {fb.name}! Ваш отзыв сохранён. Ваш отзыв будет рассмотрен в приоритетном порядке."}
-    return {f"message": f"Спасибо, {fb.name}! Ваш отзыв сохранён."}
+@app.post("/create_user")
+async def create_user(user: UserCreate):
+    return {
+        "message":f"User {user.name} created.",
+        "user_data": user
+            }

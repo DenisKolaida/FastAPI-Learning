@@ -1,3 +1,4 @@
+# models.py
 from pydantic import BaseModel, Field, field_validator, EmailStr
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
@@ -24,3 +25,10 @@ class Feedback(BaseModel):
             if word in message2:
                 raise ValueError("Использование недопустимых слов")
         return message
+    
+
+class UserCreate(BaseModel):
+    name: str
+    email: EmailStr
+    age: int | None = Field(default=None, gt=0)
+    is_subscribed: bool = False
