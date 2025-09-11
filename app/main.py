@@ -6,7 +6,7 @@ from fastapi import FastAPI, Form, UploadFile
 from fastapi.responses import FileResponse
 
 import app.db_scripts as dbs
-from app.models import Feedback, UserCreate
+from app.models import UserCreate
 
 
 app = FastAPI()

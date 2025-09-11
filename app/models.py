@@ -1,5 +1,5 @@
 # models.py
-from pydantic import BaseModel, Field, field_validator, EmailStr
+from pydantic import BaseModel, Field, field_validator, EmailStr, PositiveInt
 from pydantic_extra_types.phone_numbers import PhoneNumber
 
 
@@ -30,5 +30,5 @@ class Feedback(BaseModel):
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
-    age: int | None = Field(default=None, gt=0)
+    age: PositiveInt | None = None
     is_subscribed: bool = False
