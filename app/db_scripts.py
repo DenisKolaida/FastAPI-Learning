@@ -64,8 +64,7 @@ async def login_user(db: aiosqlite.Connection, user_name, password):
     print("========LOGGING========")
     cursor = await db.execute("SELECT uuid FROM users WHERE user_name = ? AND password = ?", (user_name, password))
     uuid = await cursor.fetchone()
-    print(uuid[0])
-    return uuid[0]
+    return uuid
 
 
 @connect
