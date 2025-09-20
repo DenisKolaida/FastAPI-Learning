@@ -27,8 +27,6 @@ class Feedback(BaseModel):
         return message
     
 
-class UserCreate(BaseModel):
-    name: str
-    email: EmailStr
-    age: PositiveInt | None = None
-    is_subscribed: bool = False
+class UserData(BaseModel):
+    username: str
+    password: str
