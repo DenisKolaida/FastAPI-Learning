@@ -1,6 +1,5 @@
 # main.py
-from ssl import SSLSession
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Cookie, HTTPException
 from uuid import uuid4
 
 import app.db_scripts as dbs
@@ -29,3 +28,12 @@ async def login(user_data: UserData, response: Response):
         response.set_cookie(key="session_token", value=uuid, httponly=True)
         return {"message": "Logged successfully."}
     return {"message": "Invalid username or password."}
+
+
+@app.get("/user")
+async def user(session_token: str | None = Cookie(default=None)):
+    if session_token:
+        user_data = await dbs.find_user_by_uuid(session_token)
+        if user_data:
+            return {"message":{"username": user_data[0][0], "password": user_data[0][1]}}
+    raise HTTPException(status_code=401)
