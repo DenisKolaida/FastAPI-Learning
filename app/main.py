@@ -1,18 +1,28 @@
 # main.py
-from fastapi import FastAPI, Request, HTTPException, Header
+from fastapi import FastAPI, Response, HTTPException, Header
 from typing import Annotated
-import app.db_scripts as dbs
+from app.models import CommonHeaders
+from datetime import datetime, date
 
 
 app = FastAPI()
 
 
 @app.get("/headers")
-async def headers_show(response: Request):
-    if "User-Agent" not in response.headers or "Accept-Language" not in response.headers:
-        raise HTTPException(status_code=400)
-    
+async def headers_show(ch: Annotated[CommonHeaders, Header()]):
     return {
-        "User-Agent": response.headers["User-Agent"],
-        "Accept-Language": response.headers["Accept-Language"]
+        "User-Agent": ch.user_agent,
+        "Accept-Language": ch.accept_language
+    }
+
+
+@app.get("/info")
+async def headers_show(response: Response, ch: Annotated[CommonHeaders, Header()]):
+    response.headers["X-Server-Time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return {
+        "message": "Добро пожаловать! Ваши заголовки успешно обработаны.",
+        "headers": {
+            "User-Agent": ch.user_agent,
+            "Accept-Language": ch.accept_language
+        }
     }

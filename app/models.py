@@ -8,7 +8,7 @@ class Contact(BaseModel):
     phone: PhoneNumber = None
 
 
-class Feedback(BaseModel):
+class Feedback(BaseModel): # I left it just as example
 
     name: str = Field(min_length=2, max_length=50)
     message: str =  Field(min_length=10, max_length=500)
@@ -27,6 +27,6 @@ class Feedback(BaseModel):
         return message
     
 
-class UserData(BaseModel):
-    username: str
-    password: str
+class CommonHeaders(BaseModel):
+    user_agent: str
+    accept_language: str
