@@ -8,12 +8,20 @@ import aiosqlite
 
 db_path = "app/db.db"
 
+TABLE_CREATION_QUERY = """
+    CREATE TABLE IF NOT EXISTS users(
+        username TEXT UNIQUE,
+        password TEXT,
+        uuid TEXT UNIQUE
+    )"""
+
 
 def connect(func):
     async def wrapper(*args, **kwargs):
         try:
             async with aiosqlite.connect(db_path) as db:
                 await db.execute("PRAGMA journal_mode=WAL")
+                await db.execute(TABLE_CREATION_QUERY)
                 result = await func(db, *args, **kwargs)
                 await db.commit()
                 return result
@@ -26,48 +34,30 @@ def connect(func):
 
 
 @connect
-async def create_table(db: aiosqlite.Connection):
-    await db.execute(
-        """
-    CREATE TABLE IF NOT EXISTS users(
-        user_name TEXT UNIQUE,
-        password TEXT,
-        uuid TEXT UNIQUE
-    )"""
-    )
-    print("========CHECKED DB========")
+async def create_user(db: aiosqlite.Connection, username, password):
 
-
-@connect
-async def create_user(db: aiosqlite.Connection, user_name, password):
-
-    await create_table()
-
-    cursor = await db.execute("SELECT user_name FROM users WHERE user_name = ?", (user_name,))
+    cursor = await db.execute("SELECT username FROM users WHERE username = ?", (username,))
     if await cursor.fetchall():
         print("========USER EXISTS========")
         return "User with such username already exists."
 
     while True:
         try:
-            await db.execute("INSERT INTO users(user_name, password, uuid) VALUES (?, ?, ?)", (user_name, password, str(uuid4())))
+            await db.execute("INSERT INTO users(username, password, uuid) VALUES (?, ?, ?)", (username, password, str(uuid4())))
             break
         except sqlite3.IntegrityError as e:
             print("Such uuid already exists. Generating new")
     print("========USER CREATED========")
-    return f"User {user_name} created."
+    return f"User {username} created."
     
 
 @connect
-async def login_user(db: aiosqlite.Connection, user_name, password):
-    await create_table()
-    print("========LOGGING========")
-    cursor = await db.execute("SELECT uuid FROM users WHERE user_name = ? AND password = ?", (user_name, password))
-    uuid = await cursor.fetchone()
-    return uuid
+async def find_user_by_username(db: aiosqlite.Connection, username):
+    cursor = await db.execute("SELECT username, password FROM users WHERE username = ?", (username,))
+    return await cursor.fetchall()
 
 
 @connect
 async def find_user_by_uuid(db: aiosqlite.Connection, uuid):
-    cursor = await db.execute("SELECT user_name, password FROM users WHERE uuid = ?", (uuid,))
+    cursor = await db.execute("SELECT username, password FROM users WHERE uuid = ?", (uuid,))
     return await cursor.fetchall()

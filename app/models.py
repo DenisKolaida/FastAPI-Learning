@@ -1,11 +1,10 @@
 # models.py
-from pydantic import BaseModel, Field, field_validator, EmailStr, PositiveInt
-from pydantic_extra_types.phone_numbers import PhoneNumber
+from pydantic import BaseModel, Field, field_validator, EmailStr
 
 
 class Contact(BaseModel):
     email: EmailStr
-    phone: PhoneNumber = None
+    phone: str | None = None
 
 
 class Feedback(BaseModel): # I left it just as example
@@ -16,7 +15,6 @@ class Feedback(BaseModel): # I left it just as example
 
 
     @field_validator('message')
-    @classmethod
     def has_bad_words(cls, message: str):
         
         bad_words = [" редиск", " бяк", " козявк", " редисок", " козявок"]
@@ -27,6 +25,6 @@ class Feedback(BaseModel): # I left it just as example
         return message
     
 
-class CommonHeaders(BaseModel):
-    user_agent: str
-    accept_language: str
+class User(BaseModel):
+    username: str
+    password: str
