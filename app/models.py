@@ -2,12 +2,12 @@
 from pydantic import BaseModel, Field, field_validator, EmailStr
 
 
-class Contact(BaseModel):
+class Contact(BaseModel): # Example, does nothing
     email: EmailStr
     phone: str | None = None
 
 
-class Feedback(BaseModel): # I left it just as example
+class Feedback(BaseModel): # Example, does nothing
 
     name: str = Field(min_length=2, max_length=50)
     message: str =  Field(min_length=10, max_length=500)
@@ -23,8 +23,8 @@ class Feedback(BaseModel): # I left it just as example
             if word in message2:
                 raise ValueError("Использование недопустимых слов")
         return message
-    
 
-class User(BaseModel):
+
+class UserDB(BaseModel):
     username: str
-    password: str
+    h_password: str 
